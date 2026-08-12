@@ -1,0 +1,34 @@
+---
+package: maSigPro
+version: 1.85.0
+bioc_release: devel
+date_converted: 2026-07-19
+source_urls:
+  bioconductor_page: https://bioconductor.org/packages/release/bioc/html/maSigPro.html
+  vignette: https://bioconductor.org/packages/release/bioc/vignettes/maSigPro/inst/doc/maSigProUsersGuide.pdf
+  overview: https://bioconductor.org/packages/release/bioc/vignettes/maSigPro/inst/doc/maSigPro.pdf
+  paper_doi: https://doi.org/10.1093/bioinformatics/btu333
+  github: https://github.com/mjnueda/maSigPro
+  online_book: ""
+notes: The full user guide was converted from the official PDF. overview.md is a clean summary of the separate official package overview. reference.md was rendered from the canonical man/*.Rd files at the recorded source version. The paper is the 2014 update; the original 2006 paper is https://doi.org/10.1093/bioinformatics/btl056.
+documents:
+  - path: overview.md
+    origin_url: https://bioconductor.org/packages/release/bioc/vignettes/maSigPro/inst/doc/maSigPro.pdf
+    origin_type: curated_document
+    package_version: 1.85.0
+    bioc_release: unknown
+  - path: paper.md
+    origin_url: https://doi.org/10.1093/bioinformatics/btu333
+    origin_type: curated_document
+    package_version: unknown
+    bioc_release: unknown
+  - path: reference.md
+    origin_url: https://github.com/mjnueda/maSigPro
+    origin_type: curated_document
+    package_version: 1.85.0
+    bioc_release: unknown
+  - path: vignette.md
+    origin_url: https://bioconductor.org/packages/release/bioc/vignettes/maSigPro/inst/doc/maSigProUsersGuide.pdf
+    origin_type: curated_document
+    package_version: 1.85.0
+    bioc_release: unknown

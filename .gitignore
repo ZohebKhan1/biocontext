@@ -1,0 +1,51 @@
+# dependencies (bun install)
+node_modules
+
+# local project config
+biocontext.config.jsonc
+
+.claude/
+
+# output
+out
+dist
+*.tgz
+*.cast
+
+# local analysis scratch
+tmp/
+
+# maintained in the separate bio-retrieval-bench repository
+benchmark/
+
+.turbo
+
+# code coverage
+coverage
+*.lcov
+
+# logs
+logs
+_.log
+report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
+
+# dotenv environment variable files
+.env
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
+
+# caches
+.eslintcache
+.cache
+*.tsbuildinfo
+
+# IntelliJ based IDEs
+.idea
+
+# Visual Studio Code settings
+.vscode/
+
+# Finder (MacOS) folder config
+.DS_Store

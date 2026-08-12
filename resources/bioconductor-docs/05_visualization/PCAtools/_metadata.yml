@@ -1,0 +1,23 @@
+---
+package: PCAtools
+version: ""
+bioc_release: ""
+date_converted: 2026-03-22
+source_urls:
+  bioconductor_page: https://bioconductor.org/packages/release/bioc/html/PCAtools.html
+  vignette: https://bioconductor.org/packages/release/bioc/vignettes/PCAtools/inst/doc/PCAtools.html
+  paper_doi: ""
+  github: https://github.com/kevinblighe/PCAtools
+  online_book: ""
+notes: No associated paper.
+documents:
+  - path: reference.md
+    origin_url: https://github.com/kevinblighe/PCAtools
+    origin_type: curated_document
+    package_version: unknown
+    bioc_release: unknown
+  - path: vignette.md
+    origin_url: https://bioconductor.org/packages/release/bioc/vignettes/PCAtools/inst/doc/PCAtools.html
+    origin_type: curated_document
+    package_version: unknown
+    bioc_release: unknown

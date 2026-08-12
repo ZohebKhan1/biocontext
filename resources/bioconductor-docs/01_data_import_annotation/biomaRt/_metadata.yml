@@ -1,0 +1,28 @@
+---
+package: biomaRt
+version: ""
+bioc_release: ""
+date_converted: 2026-03-22
+source_urls:
+  bioconductor_page: https://bioconductor.org/packages/release/bioc/html/biomaRt.html
+  vignette: https://bioconductor.org/packages/release/bioc/vignettes/biomaRt/inst/doc/accessing_ensembl.html
+  paper_doi: https://doi.org/10.1038/nprot.2009.97
+  github: ""
+  online_book: ""
+notes: tutorial.md is the accessing_other_marts vignette.
+documents:
+  - path: reference.md
+    origin_url: https://bioconductor.org/packages/release/bioc/html/biomaRt.html
+    origin_type: curated_document
+    package_version: unknown
+    bioc_release: unknown
+  - path: tutorial.md
+    origin_url: unknown
+    origin_type: curated_document
+    package_version: unknown
+    bioc_release: unknown
+  - path: vignette.md
+    origin_url: https://bioconductor.org/packages/release/bioc/vignettes/biomaRt/inst/doc/accessing_ensembl.html
+    origin_type: curated_document
+    package_version: unknown
+    bioc_release: unknown

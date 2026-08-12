@@ -1,0 +1,179 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "https://raw.githubusercontent.com/ZohebKhan1/biocontext/main/biocontext.schema.json",
+	"title": "biocontext configuration",
+	"description": "Configuration for the macOS R and Bioconductor research TUI",
+	"type": "object",
+	"properties": {
+		"$schema": {
+			"type": "string",
+			"description": "JSON Schema reference for editor support"
+		},
+		"dataDirectory": {
+			"type": "string",
+			"description": "Directory for cloned resources and local application data",
+			"default": "~/.local/share/biocontext"
+		},
+		"model": {
+			"type": "string",
+			"description": "Model identifier used for research queries",
+			"default": "gpt-5.6-luna"
+		},
+		"provider": {
+			"type": "string",
+			"description": "Configured AI provider",
+			"default": "openai"
+		},
+		"providerTimeoutMs": {
+			"type": "number",
+			"minimum": 1,
+			"default": 300000
+		},
+		"maxSteps": {
+			"type": "integer",
+			"minimum": 1,
+			"default": 40
+		},
+		"providerOptions": {
+			"type": "object",
+			"default": { "openai": { "reasoningEffort": "medium" } },
+			"additionalProperties": {
+				"type": "object",
+				"properties": {
+					"baseURL": { "type": "string" },
+					"name": { "type": "string" },
+					"reasoningEffort": {
+						"type": "string",
+						"enum": ["none", "minimal", "low", "medium", "high", "xhigh", "max"],
+						"description": "Provider-specific reasoning effort; used by OpenAI as reasoning.effort"
+					}
+				},
+				"additionalProperties": false
+			}
+		},
+		"resources": {
+			"type": "array",
+			"description": "Searchable Bioconductor package, CRAN package, Git, or local resources",
+			"items": {
+				"oneOf": [
+					{ "$ref": "#/$defs/bioconductorResource" },
+					{ "$ref": "#/$defs/cranResource" },
+					{ "$ref": "#/$defs/gitResource" },
+					{ "$ref": "#/$defs/localResource" }
+				]
+			}
+		}
+	},
+	"required": ["model", "provider", "resources"],
+	"additionalProperties": false,
+	"$defs": {
+		"commonResource": {
+			"type": "object",
+			"properties": {
+				"name": { "type": "string" },
+				"specialNotes": { "type": "string" }
+			}
+		},
+		"gitResource": {
+			"title": "Git resource",
+			"allOf": [
+				{ "$ref": "#/$defs/commonResource" },
+				{
+					"type": "object",
+					"properties": {
+						"type": { "const": "git" },
+						"name": { "type": "string" },
+						"url": { "type": "string", "format": "uri" },
+						"branch": { "type": "string", "default": "main" },
+						"searchPath": { "type": "string" },
+						"searchPaths": { "type": "array", "items": { "type": "string" } },
+						"specialNotes": { "type": "string" }
+					},
+					"required": ["type", "name", "url", "branch"],
+					"additionalProperties": false
+				}
+			]
+		},
+		"bioconductorResource": {
+			"title": "Bioconductor package resource",
+			"description": "Published documentation plus a verified package source checkout",
+			"type": "object",
+			"properties": {
+				"type": { "const": "bioconductor" },
+				"name": { "type": "string" },
+				"package": {
+					"type": "string",
+					"description": "Bioconductor package name, e.g. DESeq2",
+					"pattern": "^[a-zA-Z][a-zA-Z0-9.]*$"
+				},
+				"release": {
+					"type": "string",
+					"description": "Selector to track; aliases resolve to a numbered release before installation",
+					"pattern": "^(release|devel|[0-9]+\\.[0-9]+)$",
+					"default": "release"
+				},
+				"documents": {
+					"type": "array",
+					"description": "Which published documents to download. Omit for all of them.",
+					"items": {
+						"enum": ["vignettes", "vignetteScripts", "manual", "news"]
+					},
+					"minItems": 1,
+					"uniqueItems": true
+				},
+				"includeCurated": {
+					"type": "boolean",
+					"default": false,
+					"description": "Include bundled curated documents; set false for a clean release-document and source snapshot"
+				},
+				"source": {
+					"type": "string",
+					"format": "uri",
+					"pattern": "^https://",
+					"description": "Optional custom_git repository override. Omit to use the official GitHub repository or published Bioconductor Git branch."
+				},
+				"sourceBranch": {
+					"type": "string",
+					"description": "Branch for an explicit custom_git repository override"
+				},
+				"sourceCommit": {
+					"type": "string",
+					"pattern": "^[0-9a-fA-F]{40}$",
+					"description": "Optional immutable commit to materialize; a branch may be used only to resolve and lock this commit"
+				},
+				"specialNotes": { "type": "string" }
+			},
+			"required": ["type", "name", "package"],
+			"additionalProperties": false
+		},
+		"cranResource": {
+			"title": "CRAN package resource",
+			"description": "A validated searchable snapshot of the exact current CRAN source release",
+			"type": "object",
+			"properties": {
+				"type": { "const": "cran" },
+				"name": { "type": "string" },
+				"package": {
+					"type": "string",
+					"description": "Current CRAN package name, e.g. Seurat",
+					"pattern": "^[a-zA-Z][a-zA-Z0-9.]*$"
+				},
+				"specialNotes": { "type": "string" }
+			},
+			"required": ["type", "name", "package"],
+			"additionalProperties": false
+		},
+		"localResource": {
+			"title": "Local resource",
+			"type": "object",
+			"properties": {
+				"type": { "const": "local" },
+				"name": { "type": "string" },
+				"path": { "type": "string" },
+				"specialNotes": { "type": "string" }
+			},
+			"required": ["type", "name", "path"],
+			"additionalProperties": false
+		}
+	}
+}

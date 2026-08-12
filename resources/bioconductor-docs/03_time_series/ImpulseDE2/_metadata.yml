@@ -1,0 +1,28 @@
+---
+package: ImpulseDE2
+version: ""
+bioc_release: ""
+date_converted: 2026-07-18
+source_urls:
+  bioconductor_page: https://bioconductor.org/packages/release/bioc/html/ImpulseDE2.html
+  vignette: https://bioconductor.org/packages/release/bioc/vignettes/ImpulseDE2/inst/doc/ImpulseDE2_Tutorial.html
+  paper_doi: https://doi.org/10.1093/nar/gky675
+  github: https://github.com/YosefLab/ImpulseDE2
+  online_book: ""
+notes: Removed after Bioconductor 3.10. vignette.md is rebuilt from the official repository R Markdown source; paper.md is from PMC6237758.
+documents:
+  - path: paper.md
+    origin_url: https://doi.org/10.1093/nar/gky675
+    origin_type: curated_document
+    package_version: unknown
+    bioc_release: unknown
+  - path: reference.md
+    origin_url: https://github.com/YosefLab/ImpulseDE2
+    origin_type: curated_document
+    package_version: unknown
+    bioc_release: unknown
+  - path: vignette.md
+    origin_url: https://bioconductor.org/packages/release/bioc/vignettes/ImpulseDE2/inst/doc/ImpulseDE2_Tutorial.html
+    origin_type: curated_document
+    package_version: unknown
+    bioc_release: unknown

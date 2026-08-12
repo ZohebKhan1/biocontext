@@ -1,0 +1,33 @@
+---
+package: ComplexHeatmap
+version: ""
+bioc_release: ""
+date_converted: 2026-07-18
+source_urls:
+  bioconductor_page: https://bioconductor.org/packages/release/bioc/html/ComplexHeatmap.html
+  vignette: https://bioconductor.org/packages/release/bioc/vignettes/ComplexHeatmap/inst/doc/complex_heatmap.html
+  paper_doi: https://doi.org/10.1002/imt2.43
+  github: https://github.com/jokergoo/ComplexHeatmap
+  online_book: https://jokergoo.github.io/ComplexHeatmap-reference/book/
+notes: The Bioconductor vignette is a redirect. book.md is rebuilt from the official ComplexHeatmap-reference R Markdown sources; tutorial.md is the FAQ.
+documents:
+  - path: book.md
+    origin_url: https://jokergoo.github.io/ComplexHeatmap-reference/book/
+    origin_type: curated_document
+    package_version: unknown
+    bioc_release: unknown
+  - path: reference.md
+    origin_url: https://github.com/jokergoo/ComplexHeatmap
+    origin_type: curated_document
+    package_version: unknown
+    bioc_release: unknown
+  - path: tutorial.md
+    origin_url: unknown
+    origin_type: curated_document
+    package_version: unknown
+    bioc_release: unknown
+  - path: vignette.md
+    origin_url: https://bioconductor.org/packages/release/bioc/vignettes/ComplexHeatmap/inst/doc/complex_heatmap.html
+    origin_type: curated_document
+    package_version: unknown
+    bioc_release: unknown

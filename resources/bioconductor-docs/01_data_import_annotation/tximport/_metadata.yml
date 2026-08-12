@@ -1,0 +1,23 @@
+---
+package: tximport
+version: ""
+bioc_release: ""
+date_converted: 2026-03-22
+source_urls:
+  bioconductor_page: https://bioconductor.org/packages/release/bioc/html/tximport.html
+  vignette: https://bioconductor.org/packages/release/bioc/vignettes/tximport/inst/doc/tximport.html
+  paper_doi: https://doi.org/10.12688/f1000research.7563.2
+  github: https://github.com/thelovelab/tximport
+  online_book: ""
+notes: ""
+documents:
+  - path: reference.md
+    origin_url: https://github.com/thelovelab/tximport
+    origin_type: curated_document
+    package_version: unknown
+    bioc_release: unknown
+  - path: vignette.md
+    origin_url: https://bioconductor.org/packages/release/bioc/vignettes/tximport/inst/doc/tximport.html
+    origin_type: curated_document
+    package_version: unknown
+    bioc_release: unknown

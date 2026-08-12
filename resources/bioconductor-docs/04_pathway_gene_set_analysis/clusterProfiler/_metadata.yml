@@ -1,0 +1,28 @@
+---
+package: clusterProfiler
+version: ""
+bioc_release: ""
+date_converted: 2026-07-18
+source_urls:
+  bioconductor_page: https://bioconductor.org/packages/release/bioc/html/clusterProfiler.html
+  vignette: https://bioconductor.org/packages/release/bioc/vignettes/clusterProfiler/inst/doc/clusterProfiler.html
+  paper_doi: https://doi.org/10.1016/j.xinn.2021.100141
+  github: https://github.com/YuLab-SMU/clusterProfiler
+  online_book: https://yulab-smu.top/biomedical-knowledge-mining-book/
+notes: The Bioconductor vignette is a redirect. book.md is rebuilt from the official clusterProfiler-book R Markdown sources.
+documents:
+  - path: book.md
+    origin_url: https://yulab-smu.top/biomedical-knowledge-mining-book/
+    origin_type: curated_document
+    package_version: unknown
+    bioc_release: unknown
+  - path: reference.md
+    origin_url: https://github.com/YuLab-SMU/clusterProfiler
+    origin_type: curated_document
+    package_version: unknown
+    bioc_release: unknown
+  - path: vignette.md
+    origin_url: https://bioconductor.org/packages/release/bioc/vignettes/clusterProfiler/inst/doc/clusterProfiler.html
+    origin_type: curated_document
+    package_version: unknown
+    bioc_release: unknown

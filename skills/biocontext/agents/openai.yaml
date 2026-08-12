@@ -1,0 +1,4 @@
+interface:
+  display_name: "biocontext"
+  short_description: "Ground Bioconductor behavior in package docs and source"
+  default_prompt: "Use $biocontext to validate the important Bioconductor package assumptions in this task with targeted, source-grounded questions."

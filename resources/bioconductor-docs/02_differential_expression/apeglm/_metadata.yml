@@ -1,0 +1,28 @@
+---
+package: apeglm
+version: ""
+bioc_release: ""
+date_converted: 2026-03-22
+source_urls:
+  bioconductor_page: https://bioconductor.org/packages/release/bioc/html/apeglm.html
+  vignette: https://bioconductor.org/packages/release/bioc/vignettes/apeglm/inst/doc/apeglm.html
+  paper_doi: https://doi.org/10.1093/bioinformatics/bty895
+  github: https://github.com/azhu513/apeglm
+  online_book: ""
+notes: Paper PDF from PMC6581436.
+documents:
+  - path: paper.md
+    origin_url: https://doi.org/10.1093/bioinformatics/bty895
+    origin_type: curated_document
+    package_version: unknown
+    bioc_release: unknown
+  - path: reference.md
+    origin_url: https://github.com/azhu513/apeglm
+    origin_type: curated_document
+    package_version: unknown
+    bioc_release: unknown
+  - path: vignette.md
+    origin_url: https://bioconductor.org/packages/release/bioc/vignettes/apeglm/inst/doc/apeglm.html
+    origin_type: curated_document
+    package_version: unknown
+    bioc_release: unknown

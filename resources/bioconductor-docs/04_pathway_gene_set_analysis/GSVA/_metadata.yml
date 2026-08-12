@@ -1,0 +1,43 @@
+---
+package: GSVA
+version: 2.7.10
+bioc_release: devel
+date_converted: 2026-07-19
+source_urls:
+  bioconductor_page: https://bioconductor.org/packages/release/bioc/html/GSVA.html
+  vignette: https://bioconductor.org/packages/release/bioc/vignettes/GSVA/inst/doc/GSVA.html
+  paper_doi: https://doi.org/10.1186/1471-2105-14-7
+  github: https://github.com/rcastelo/GSVA
+  online_book: ""
+notes: vignette.md is the primary guide, tutorial.md covers single-cell data, proteomics.md is the official proteomics article, and hpc.md is rendered from the canonical devel-only HPC vignette source. reference.md was rendered from the canonical man/*.Rd files at the recorded source version. Paper from PMC3618321.
+documents:
+  - path: hpc.md
+    origin_url: unknown
+    origin_type: curated_document
+    package_version: 2.7.10
+    bioc_release: unknown
+  - path: paper.md
+    origin_url: https://doi.org/10.1186/1471-2105-14-7
+    origin_type: curated_document
+    package_version: unknown
+    bioc_release: unknown
+  - path: proteomics.md
+    origin_url: unknown
+    origin_type: curated_document
+    package_version: 2.7.10
+    bioc_release: unknown
+  - path: reference.md
+    origin_url: https://github.com/rcastelo/GSVA
+    origin_type: curated_document
+    package_version: 2.7.10
+    bioc_release: unknown
+  - path: tutorial.md
+    origin_url: unknown
+    origin_type: curated_document
+    package_version: 2.7.10
+    bioc_release: unknown
+  - path: vignette.md
+    origin_url: https://bioconductor.org/packages/release/bioc/vignettes/GSVA/inst/doc/GSVA.html
+    origin_type: curated_document
+    package_version: 2.7.10
+    bioc_release: unknown

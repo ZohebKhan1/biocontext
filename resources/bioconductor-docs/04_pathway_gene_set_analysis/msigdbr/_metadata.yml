@@ -1,0 +1,23 @@
+---
+package: msigdbr
+version: ""
+bioc_release: ""
+date_converted: 2026-03-22
+source_urls:
+  bioconductor_page: ""
+  vignette: https://igordot.github.io/msigdbr/articles/msigdbr-intro.html
+  paper_doi: ""
+  github: https://github.com/igordot/msigdbr
+  online_book: ""
+notes: CRAN package, not Bioconductor. No associated paper. Vignette from pkgdown site.
+documents:
+  - path: reference.md
+    origin_url: https://github.com/igordot/msigdbr
+    origin_type: curated_document
+    package_version: unknown
+    bioc_release: unknown
+  - path: vignette.md
+    origin_url: https://igordot.github.io/msigdbr/articles/msigdbr-intro.html
+    origin_type: curated_document
+    package_version: unknown
+    bioc_release: unknown

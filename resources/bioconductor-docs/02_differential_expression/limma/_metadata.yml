@@ -1,0 +1,38 @@
+---
+package: limma
+version: ""
+bioc_release: ""
+date_converted: 2026-03-22
+source_urls:
+  bioconductor_page: https://bioconductor.org/packages/release/bioc/html/limma.html
+  vignette: https://bioconductor.org/packages/release/bioc/vignettes/limma/inst/doc/usersguide.pdf
+  paper_doi: https://doi.org/10.1093/nar/gkv007
+  github: ""
+  online_book: ""
+notes: Vignette (user guide) converted from PDF via Docling. tutorial.md is the RNAseq123 design matrices tutorial. intro.md is the brief Bioconductor intro vignette.
+documents:
+  - path: intro.md
+    origin_url: unknown
+    origin_type: curated_document
+    package_version: unknown
+    bioc_release: unknown
+  - path: paper.md
+    origin_url: https://doi.org/10.1093/nar/gkv007
+    origin_type: curated_document
+    package_version: unknown
+    bioc_release: unknown
+  - path: reference.md
+    origin_url: https://bioconductor.org/packages/release/bioc/html/limma.html
+    origin_type: curated_document
+    package_version: unknown
+    bioc_release: unknown
+  - path: tutorial.md
+    origin_url: unknown
+    origin_type: curated_document
+    package_version: unknown
+    bioc_release: unknown
+  - path: vignette.md
+    origin_url: https://bioconductor.org/packages/release/bioc/vignettes/limma/inst/doc/usersguide.pdf
+    origin_type: curated_document
+    package_version: unknown
+    bioc_release: unknown

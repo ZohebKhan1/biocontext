@@ -1,0 +1,27 @@
+# R
+.Rhistory
+.RData
+.Rproj.user/
+*.Rproj
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Conversion artifacts
+*.html
+*.pdf
+*.tex
+*.log
+*.aux
+
+# Temporary
+tmp/
+temp/
+node_modules/
+
+# Cloned source repos (re-clone as needed)
+**/repo/
+**/book_source/
+*.pdf:Zone.Identifier
+*:Zone.Identifier

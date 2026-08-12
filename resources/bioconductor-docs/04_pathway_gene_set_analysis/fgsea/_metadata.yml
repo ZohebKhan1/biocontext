@@ -1,0 +1,33 @@
+---
+package: fgsea
+version: 1.39.2
+bioc_release: devel
+date_converted: 2026-07-19
+source_urls:
+  bioconductor_page: https://bioconductor.org/packages/release/bioc/html/fgsea.html
+  vignette: https://bioconductor.org/packages/release/bioc/vignettes/fgsea/inst/doc/fgsea-tutorial.html
+  paper_doi: https://doi.org/10.1101/060012
+  github: https://github.com/alserglab/fgsea
+  online_book: ""
+notes: vignette.md documents fgsea and tutorial.md documents GESECA. paper.md is a curated summary of the structured bioRxiv article; image-encoded equations were deliberately omitted instead of accepting corrupted PDF/OCR output. reference.md was rendered from the canonical man/*.Rd files at the recorded source version.
+documents:
+  - path: paper.md
+    origin_url: https://doi.org/10.1101/060012
+    origin_type: curated_document
+    package_version: unknown
+    bioc_release: unknown
+  - path: reference.md
+    origin_url: https://github.com/alserglab/fgsea
+    origin_type: curated_document
+    package_version: 1.39.2
+    bioc_release: unknown
+  - path: tutorial.md
+    origin_url: unknown
+    origin_type: curated_document
+    package_version: 1.39.2
+    bioc_release: unknown
+  - path: vignette.md
+    origin_url: https://bioconductor.org/packages/release/bioc/vignettes/fgsea/inst/doc/fgsea-tutorial.html
+    origin_type: curated_document
+    package_version: 1.39.2
+    bioc_release: unknown

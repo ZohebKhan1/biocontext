@@ -1,0 +1,10 @@
+{
+	"name": "bioconductor-docs",
+	"private": true,
+	"scripts": {
+		"validate": "bun tools/validate_metadata.ts"
+	},
+	"dependencies": {
+		"yaml": "^2.8.2"
+	}
+}

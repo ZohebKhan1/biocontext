@@ -1,0 +1,27 @@
+{
+	"$schema": "https://turborepo.com/schema.json",
+	"remoteCache": {
+		"enabled": true
+	},
+	"tasks": {
+		"build": {
+			"dependsOn": ["^build"],
+			"inputs": ["src/**", "scripts/**", "*.config.*", "*.json", "!**/node_modules/**"],
+			"outputs": ["dist/**"]
+		},
+		"format": {
+			"dependsOn": ["^format"]
+		},
+		"check": {
+			"dependsOn": ["^check"]
+		},
+		"test": {
+			"dependsOn": ["^test"],
+			"cache": false
+		},
+		"dev": {
+			"persistent": true,
+			"cache": false
+		}
+	}
+}

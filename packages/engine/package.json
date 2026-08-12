@@ -1,0 +1,58 @@
+{
+	"name": "@biocontext/engine",
+	"version": "0.1.0",
+	"private": true,
+	"description": "Local retrieval engine for Bioconductor documentation and exact package source used by biocontext",
+	"author": "Zoheb Khan",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/ZohebKhan1/biocontext.git",
+		"directory": "packages/engine"
+	},
+	"keywords": [
+		"bioconductor",
+		"bioinformatics",
+		"ai",
+		"documentation",
+		"retrieval",
+		"bun"
+	],
+	"engines": {
+		"bun": ">=1.1.0"
+	},
+	"module": "src/index.ts",
+	"type": "module",
+	"exports": {
+		".": "./src/index.ts",
+		"./stream": "./src/stream/index.ts",
+		"./stream/types": "./src/stream/types.ts",
+		"./resources/schema": "./src/resources/schema.ts"
+	},
+	"scripts": {
+		"check": "tsgo --noEmit",
+		"format": "prettier --write .",
+		"test": "bun test",
+		"test:watch": "bun test --watch"
+	},
+	"devDependencies": {
+		"@types/bun": "latest",
+		"@types/tar-stream": "^3.1.4",
+		"@typescript/native-preview": "^7.0.0-dev.20260109.1",
+		"prettier": "^3.7.4"
+	},
+	"dependencies": {
+		"@ai-sdk/anthropic": "^3.0.23",
+		"@ai-sdk/google": "^3.0.13",
+		"@ai-sdk/openai": "^3.0.18",
+		"@ai-sdk/openai-compatible": "^2.0.18",
+		"@biocontext/shared": "workspace:*",
+		"ai": "^6.0.49",
+		"effect": "4.0.0-beta.20",
+		"just-bash": "^2.7.0",
+		"tar-stream": "^3.2.0",
+		"unpdf": "^1.8.0",
+		"vercel-minimax-ai-provider": "^0.0.2",
+		"yaml": "^2.8.2",
+		"zod": "^3.25.76"
+	}
+}

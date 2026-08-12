@@ -1,0 +1,5 @@
+#!/bin/zsh
+set -eu
+
+: "${BIOCONTEXT_CAPTURE_FILE:?BIOCONTEXT_CAPTURE_FILE is required}"
+command cat > "$BIOCONTEXT_CAPTURE_FILE"

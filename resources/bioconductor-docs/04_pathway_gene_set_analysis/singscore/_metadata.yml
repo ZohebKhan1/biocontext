@@ -1,0 +1,28 @@
+---
+package: singscore
+version: ""
+bioc_release: ""
+date_converted: 2026-03-22
+source_urls:
+  bioconductor_page: https://bioconductor.org/packages/release/bioc/html/singscore.html
+  vignette: https://bioconductor.org/packages/release/bioc/vignettes/singscore/inst/doc/singscore.html
+  paper_doi: https://doi.org/10.1186/s12859-018-2435-4
+  github: https://github.com/DavisLaboratory/singscore
+  online_book: ""
+notes: Paper from PMC6219008.
+documents:
+  - path: paper.md
+    origin_url: https://doi.org/10.1186/s12859-018-2435-4
+    origin_type: curated_document
+    package_version: unknown
+    bioc_release: unknown
+  - path: reference.md
+    origin_url: https://github.com/DavisLaboratory/singscore
+    origin_type: curated_document
+    package_version: unknown
+    bioc_release: unknown
+  - path: vignette.md
+    origin_url: https://bioconductor.org/packages/release/bioc/vignettes/singscore/inst/doc/singscore.html
+    origin_type: curated_document
+    package_version: unknown
+    bioc_release: unknown

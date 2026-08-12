@@ -1,0 +1,549 @@
+import { promises as fs } from 'node:fs';
+import path from 'node:path';
+
+import { metricsInfo, withMetricsSpan } from '../../metrics/index.ts';
+import { CommonHints } from '../../errors.ts';
+import { ResourceError, resourceNameToKey } from '../helpers.ts';
+import { GitResourceSchema } from '../schema.ts';
+import type { FsResource, GitResourceArgs } from '../types.ts';
+
+const ANONYMOUS_BRANCH_FALLBACKS = ['main', 'master', 'trunk', 'dev'];
+const ANONYMOUS_CLONE_DIR = '.tmp';
+
+const isBranchNotFoundError = (cause: unknown) => {
+	const message =
+		typeof cause === 'object' && cause instanceof Error ? cause.message : String(cause);
+	return (
+		/couldn't find remote ref/i.test(message) ||
+		/Remote branch .* not found/i.test(message) ||
+		/fatal: invalid refspec/i.test(message) ||
+		/error: pathspec .* did not match any/i.test(message) ||
+		/Branch ".*" not found in the repository/i.test(message) ||
+		/The specified branch was not found/i.test(message)
+	);
+};
+
+const cleanupDirectory = async (pathToRemove: string) => {
+	try {
+		await fs.rm(pathToRemove, { recursive: true, force: true });
+	} catch {
+		return;
+	}
+};
+
+const validateGitUrl = (url: string): { success: true } | { success: false; error: string } => {
+	const result = GitResourceSchema.shape.url.safeParse(url);
+	if (result.success) return { success: true };
+	return { success: false, error: result.error.errors[0]?.message ?? 'Invalid git URL' };
+};
+
+const validateBranch = (branch: string): { success: true } | { success: false; error: string } => {
+	const result = GitResourceSchema.shape.branch.safeParse(branch);
+	if (result.success) return { success: true };
+	return { success: false, error: result.error.errors[0]?.message ?? 'Invalid branch name' };
+};
+
+const validateSearchPath = (
+	searchPath: string
+): { success: true } | { success: false; error: string } => {
+	const result = GitResourceSchema.shape.searchPath.safeParse(searchPath);
+	if (result.success) return { success: true };
+	return { success: false, error: result.error.errors[0]?.message ?? 'Invalid search path' };
+};
+
+const directoryExists = async (path: string): Promise<boolean> => {
+	try {
+		const stat = await fs.stat(path);
+		return stat.isDirectory();
+	} catch {
+		return false;
+	}
+};
+
+/**
+ * Git error patterns and their user-friendly messages.
+ */
+const GitErrorPatterns = {
+	// Branch not found errors
+	BRANCH_NOT_FOUND: [
+		/couldn't find remote ref/i,
+		/Remote branch .* not found/i,
+		/fatal: invalid refspec/i,
+		/error: pathspec .* did not match any/i
+	],
+	// Repository not found
+	REPO_NOT_FOUND: [
+		/Repository not found/i,
+		/remote: Repository not found/i,
+		/fatal: repository .* not found/i,
+		/ERROR: Repository not found/i
+	],
+	// Authentication/Permission errors
+	AUTH_REQUIRED: [
+		/Authentication failed/i,
+		/could not read Username/i,
+		/Permission denied/i,
+		/fatal: Authentication failed/i,
+		/remote: HTTP Basic: Access denied/i,
+		/The requested URL returned error: 403/i
+	],
+	// Network errors
+	NETWORK_ERROR: [
+		/Could not resolve host/i,
+		/Connection refused/i,
+		/Network is unreachable/i,
+		/Unable to access/i,
+		/Failed to connect/i,
+		/Connection timed out/i,
+		/SSL certificate problem/i
+	],
+	// Rate limiting
+	RATE_LIMITED: [/rate limit exceeded/i, /too many requests/i, /API rate limit/i]
+} as const;
+
+type GitErrorType = keyof typeof GitErrorPatterns;
+
+/**
+ * Detect the type of git error from stderr output.
+ */
+const detectGitErrorType = (stderr: string): GitErrorType | null => {
+	for (const [errorType, patterns] of Object.entries(GitErrorPatterns)) {
+		for (const pattern of patterns) {
+			if (pattern.test(stderr)) {
+				return errorType as GitErrorType;
+			}
+		}
+	}
+	return null;
+};
+
+/**
+ * Get a user-friendly error message and hint based on git error type.
+ */
+const getGitErrorDetails = (
+	errorType: GitErrorType | null,
+	context: { operation: string; branch?: string; url?: string }
+): { message: string; hint: string } => {
+	switch (errorType) {
+		case 'BRANCH_NOT_FOUND':
+			return {
+				message: context.branch
+					? `Branch "${context.branch}" not found in the repository`
+					: 'The specified branch was not found',
+				hint: `${CommonHints.CHECK_BRANCH} You can check available branches at ${context.url ?? 'the repository URL'}.`
+			};
+
+		case 'REPO_NOT_FOUND':
+			return {
+				message: 'Repository not found',
+				hint: `${CommonHints.CHECK_URL} If this is a private repository, ${CommonHints.CHECK_PERMISSIONS.toLowerCase()}`
+			};
+
+		case 'AUTH_REQUIRED':
+			return {
+				message: 'Authentication required or access denied',
+				hint: CommonHints.CHECK_PERMISSIONS
+			};
+
+		case 'NETWORK_ERROR':
+			return {
+				message: `Network error during git ${context.operation}`,
+				hint: CommonHints.CHECK_NETWORK
+			};
+
+		case 'RATE_LIMITED':
+			return {
+				message: 'Rate limit exceeded',
+				hint: 'Wait a few minutes before trying again, or authenticate to increase your rate limit.'
+			};
+
+		default:
+			return {
+				message: `git ${context.operation} failed`,
+				hint: `${CommonHints.CLEAR_CACHE} If the problem persists, verify your repository configuration.`
+			};
+	}
+};
+
+interface GitRunResult {
+	exitCode: number;
+	stderr: string;
+}
+
+const runGitChecked = async (
+	args: string[],
+	options: { cwd?: string; quiet: boolean },
+	buildError: (result: GitRunResult) => ResourceError
+) => {
+	const runResult = await runGit(args, options);
+	if (runResult.exitCode !== 0) {
+		throw buildError(runResult);
+	}
+	return runResult;
+};
+
+const runGit = async (
+	args: string[],
+	options: { cwd?: string; quiet: boolean }
+): Promise<GitRunResult> => {
+	// Always capture stderr for error detection, but stdout can be ignored
+	const proc = Bun.spawn(['git', ...args], {
+		cwd: options.cwd,
+		stdout: options.quiet ? 'ignore' : 'inherit',
+		stderr: 'pipe'
+	});
+
+	const stderrChunks: Uint8Array[] = [];
+	const reader = proc.stderr.getReader();
+
+	try {
+		while (true) {
+			const { done, value } = await reader.read();
+			if (done) break;
+			if (value) stderrChunks.push(value);
+		}
+	} finally {
+		reader.releaseLock();
+	}
+
+	const exitCode = await proc.exited;
+	const totalLength = stderrChunks.reduce((sum, chunk) => sum + chunk.length, 0);
+	const combined = new Uint8Array(totalLength);
+	let offset = 0;
+	for (const chunk of stderrChunks) {
+		combined.set(chunk, offset);
+		offset += chunk.length;
+	}
+	const stderr = new TextDecoder().decode(combined);
+
+	// Log stderr to console if not quiet and there's content
+	if (!options.quiet && stderr.trim()) {
+		console.error(stderr);
+	}
+
+	return { exitCode, stderr };
+};
+
+const gitClone = async (args: {
+	repoUrl: string;
+	repoBranch: string;
+	repoSubPaths: readonly string[];
+	localAbsolutePath: string;
+	quiet: boolean;
+}) => {
+	const urlValidation = validateGitUrl(args.repoUrl);
+	if (!urlValidation.success) {
+		throw new ResourceError({
+			message: urlValidation.error,
+			hint: 'URLs must be valid HTTPS URLs. Example: https://github.com/user/repo',
+			cause: new Error('URL validation failed')
+		});
+	}
+	const branchValidation = validateBranch(args.repoBranch);
+	if (!branchValidation.success) {
+		throw new ResourceError({
+			message: branchValidation.error,
+			hint: 'Branch names can only contain letters, numbers, hyphens, underscores, dots, and forward slashes.',
+			cause: new Error('Branch validation failed')
+		});
+	}
+	for (const repoSubPath of args.repoSubPaths) {
+		const pathValidation = validateSearchPath(repoSubPath);
+		if (!pathValidation.success) {
+			throw new ResourceError({
+				message: pathValidation.error,
+				hint: 'Search paths cannot contain ".." (path traversal) and must use only safe characters.',
+				cause: new Error('Path validation failed')
+			});
+		}
+	}
+
+	const needsSparseCheckout = args.repoSubPaths.length > 0;
+	const cloneArgs = needsSparseCheckout
+		? [
+				'clone',
+				'--filter=blob:none',
+				'--no-checkout',
+				'--sparse',
+				'-b',
+				args.repoBranch,
+				args.repoUrl,
+				args.localAbsolutePath
+			]
+		: ['clone', '--depth', '1', '-b', args.repoBranch, args.repoUrl, args.localAbsolutePath];
+
+	await runGitChecked(cloneArgs, { quiet: args.quiet }, (cloneResult) => {
+		const errorType = detectGitErrorType(cloneResult.stderr);
+		const { message, hint } = getGitErrorDetails(errorType, {
+			operation: 'clone',
+			branch: args.repoBranch,
+			url: args.repoUrl
+		});
+
+		return new ResourceError({
+			message,
+			hint,
+			cause: new Error(
+				`git clone failed with exit code ${cloneResult.exitCode}: ${cloneResult.stderr}`
+			)
+		});
+	});
+
+	if (needsSparseCheckout) {
+		await runGitChecked(
+			['sparse-checkout', 'set', ...args.repoSubPaths],
+			{ cwd: args.localAbsolutePath, quiet: args.quiet },
+			(sparseResult) =>
+				new ResourceError({
+					message: `Failed to set sparse-checkout path(s): "${args.repoSubPaths.join(', ')}"`,
+					hint: 'Verify the search paths exist in the repository. Check the repository structure to find the correct path.',
+					cause: new Error(
+						`git sparse-checkout failed with exit code ${sparseResult.exitCode}: ${sparseResult.stderr}`
+					)
+				})
+		);
+
+		await runGitChecked(
+			['checkout'],
+			{ cwd: args.localAbsolutePath, quiet: args.quiet },
+			(checkout) =>
+				new ResourceError({
+					message: 'Failed to checkout repository',
+					hint: CommonHints.CLEAR_CACHE,
+					cause: new Error(
+						`git checkout failed with exit code ${checkout.exitCode}: ${checkout.stderr}`
+					)
+				})
+		);
+	}
+};
+
+const gitUpdate = async (args: {
+	localAbsolutePath: string;
+	branch: string;
+	repoSubPaths: readonly string[];
+	quiet: boolean;
+}) => {
+	await runGitChecked(
+		['fetch', '--depth', '1', 'origin', args.branch],
+		{ cwd: args.localAbsolutePath, quiet: args.quiet },
+		(fetchResult) => {
+			const errorType = detectGitErrorType(fetchResult.stderr);
+			const { message, hint } = getGitErrorDetails(errorType, {
+				operation: 'fetch',
+				branch: args.branch
+			});
+
+			return new ResourceError({
+				message,
+				hint,
+				cause: new Error(
+					`git fetch failed with exit code ${fetchResult.exitCode}: ${fetchResult.stderr}`
+				)
+			});
+		}
+	);
+
+	await runGitChecked(
+		['reset', '--hard', `origin/${args.branch}`],
+		{ cwd: args.localAbsolutePath, quiet: args.quiet },
+		(resetResult) =>
+			new ResourceError({
+				message: 'Failed to update local repository',
+				hint: `${CommonHints.CLEAR_CACHE} This will re-clone the repository from scratch.`,
+				cause: new Error(
+					`git reset failed with exit code ${resetResult.exitCode}: ${resetResult.stderr}`
+				)
+			})
+	);
+
+	if (args.repoSubPaths.length > 0) {
+		await runGitChecked(
+			['sparse-checkout', 'set', ...args.repoSubPaths],
+			{ cwd: args.localAbsolutePath, quiet: args.quiet },
+			(sparseResult) =>
+				new ResourceError({
+					message: `Failed to set sparse-checkout path(s): "${args.repoSubPaths.join(', ')}"`,
+					hint: 'Verify the search paths exist in the repository. Check the repository structure to find the correct path.',
+					cause: new Error(
+						`git sparse-checkout failed with exit code ${sparseResult.exitCode}: ${sparseResult.stderr}`
+					)
+				})
+		);
+
+		await runGitChecked(
+			['checkout'],
+			{ cwd: args.localAbsolutePath, quiet: args.quiet },
+			(checkoutResult) =>
+				new ResourceError({
+					message: 'Failed to checkout repository',
+					hint: CommonHints.CLEAR_CACHE,
+					cause: new Error(
+						`git checkout failed with exit code ${checkoutResult.exitCode}: ${checkoutResult.stderr}`
+					)
+				})
+		);
+	}
+};
+
+/**
+ * Detect common mistakes in searchPath and provide helpful hints.
+ */
+const getSearchPathHint = (searchPath: string, repoPath: string): string => {
+	// Pattern: GitHub URL structure like "tree/main/path" or "blob/dev/path"
+	const gitHubTreeMatch = searchPath.match(/^(tree|blob)\/([^/]+)\/(.+)$/);
+	if (gitHubTreeMatch) {
+		const [, , branch, actualPath] = gitHubTreeMatch;
+		return `It looks like you included the GitHub URL structure. Remove '${gitHubTreeMatch[1]}/${branch}/' prefix and use: "${actualPath}"`;
+	}
+
+	// Pattern: full URL included
+	if (searchPath.startsWith('http://') || searchPath.startsWith('https://')) {
+		return 'searchPath should be a relative path within the repo, not a URL. Extract just the directory path after the branch name.';
+	}
+
+	// Pattern: starts with domain
+	if (searchPath.includes('github.com') || searchPath.includes('gitlab.com')) {
+		return "searchPath should be a relative path within the repo, not a URL. Use just the directory path, e.g., 'src/docs'";
+	}
+
+	// Default hint with helpful command
+	return `Verify the path exists in the repository. To see available directories, run:\n  ls ${repoPath}`;
+};
+
+const ensureSearchPathsExist = async (
+	localPath: string,
+	repoSubPaths: readonly string[],
+	resourceName: string
+): Promise<void> => {
+	for (const repoSubPath of repoSubPaths) {
+		const subPath = path.join(localPath, repoSubPath);
+		const exists = await directoryExists(subPath);
+		if (!exists) {
+			const hint = getSearchPathHint(repoSubPath, localPath);
+			throw new ResourceError({
+				message: `Invalid searchPath for resource "${resourceName}"\n\nPath not found: "${repoSubPath}"\nRepository: ${localPath}`,
+				hint,
+				cause: new Error(`Missing search path: ${repoSubPath}`)
+			});
+		}
+	}
+};
+
+const ensureGitResource = async (config: GitResourceArgs): Promise<string> => {
+	const resourceKey = config.localDirectoryKey ?? resourceNameToKey(config.name);
+	const basePath = config.ephemeral
+		? path.join(config.resourcesDirectoryPath, ANONYMOUS_CLONE_DIR)
+		: config.resourcesDirectoryPath;
+	const localPath = path.join(basePath, resourceKey);
+
+	try {
+		await fs.mkdir(basePath, { recursive: true });
+	} catch (cause) {
+		throw new ResourceError({
+			message: 'Failed to create resources directory',
+			hint: 'Check that you have write permissions to the biocontext data directory.',
+			cause
+		});
+	}
+
+	if (config.ephemeral) {
+		await cleanupDirectory(localPath);
+	}
+
+	return withMetricsSpan(
+		'resource.git.ensure',
+		async () => {
+			const exists = await directoryExists(localPath);
+
+			if (exists && !config.ephemeral) {
+				metricsInfo('resource.git.update', {
+					name: config.name,
+					branch: config.branch,
+					repoSubPaths: config.repoSubPaths
+				});
+				await gitUpdate({
+					localAbsolutePath: localPath,
+					branch: config.branch,
+					repoSubPaths: config.repoSubPaths,
+					quiet: config.quiet
+				});
+				if (config.repoSubPaths.length > 0) {
+					await ensureSearchPathsExist(localPath, config.repoSubPaths, config.name);
+				}
+				return localPath;
+			}
+
+			metricsInfo('resource.git.clone', {
+				name: config.name,
+				branch: config.ephemeral ? 'fallback' : config.branch,
+				repoSubPaths: config.repoSubPaths
+			});
+
+			if (config.ephemeral) {
+				let lastBranchError: unknown;
+				for (const branch of ANONYMOUS_BRANCH_FALLBACKS) {
+					try {
+						await gitClone({
+							repoUrl: config.url,
+							repoBranch: branch,
+							repoSubPaths: config.repoSubPaths,
+							localAbsolutePath: localPath,
+							quiet: config.quiet
+						});
+						if (config.repoSubPaths.length > 0) {
+							await ensureSearchPathsExist(localPath, config.repoSubPaths, config.name);
+						}
+						return localPath;
+					} catch (error) {
+						lastBranchError = error;
+						await cleanupDirectory(localPath);
+						if (!isBranchNotFoundError(error)) throw error;
+					}
+				}
+
+				throw new ResourceError({
+					message: `Could not find this repository on a common branch. Tried ${ANONYMOUS_BRANCH_FALLBACKS.join(
+						', '
+					)}.`,
+					hint: 'If the repo uses a different branch, add it with /add or edit biocontext.config.jsonc.',
+					cause: lastBranchError
+				});
+			}
+
+			await gitClone({
+				repoUrl: config.url,
+				repoBranch: config.branch,
+				repoSubPaths: config.repoSubPaths,
+				localAbsolutePath: localPath,
+				quiet: config.quiet
+			});
+			if (config.repoSubPaths.length > 0) {
+				await ensureSearchPathsExist(localPath, config.repoSubPaths, config.name);
+			}
+
+			return localPath;
+		},
+		{ resource: config.name }
+	);
+};
+
+export const loadGitResource = async (config: GitResourceArgs): Promise<FsResource> => {
+	const localPath = await ensureGitResource(config);
+	const cleanup = config.ephemeral
+		? async () => {
+				await cleanupDirectory(localPath);
+			}
+		: undefined;
+
+	return {
+		_tag: 'fs-based',
+		name: config.name,
+		fsName: resourceNameToKey(config.name),
+		type: 'git',
+		repoSubPaths: config.repoSubPaths,
+		specialAgentInstructions: config.specialAgentInstructions,
+		getAbsoluteDirectoryPath: async () => localPath,
+		...(cleanup ? { cleanup } : {})
+	};
+};

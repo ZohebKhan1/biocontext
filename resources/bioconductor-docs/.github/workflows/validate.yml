@@ -1,0 +1,17 @@
+name: validate corpus
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
+      - run: bun run validate
+      - run: python3 tools/clean_markdown.py --check
+      - run: python3 tools/generate_directory.py --check

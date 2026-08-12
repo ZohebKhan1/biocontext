@@ -1,0 +1,18 @@
+---
+package: ""
+version: ""
+bioc_release: ""
+date_converted: ""
+source_urls:
+  bioconductor_page: ""
+  vignette: ""
+  paper_doi: ""
+  github: ""
+  online_book: ""
+notes: ""
+documents:
+  - path: "vignette.md"
+    origin_url: "unknown"
+    origin_type: "curated_document"
+    package_version: "unknown"
+    bioc_release: "unknown"

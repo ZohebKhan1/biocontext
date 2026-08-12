@@ -1,0 +1,33 @@
+---
+package: DESeq2
+version: ""
+bioc_release: ""
+date_converted: 2026-03-22
+source_urls:
+  bioconductor_page: https://bioconductor.org/packages/release/bioc/html/DESeq2.html
+  vignette: https://bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html
+  paper_doi: https://doi.org/10.1186/s13059-014-0550-8
+  github: https://github.com/thelovelab/DESeq2
+  online_book: ""
+notes: workflow.md from rnaseqGene workflow. Paper PDF from PMC4302049.
+documents:
+  - path: paper.md
+    origin_url: https://doi.org/10.1186/s13059-014-0550-8
+    origin_type: curated_document
+    package_version: unknown
+    bioc_release: unknown
+  - path: reference.md
+    origin_url: https://github.com/thelovelab/DESeq2
+    origin_type: curated_document
+    package_version: unknown
+    bioc_release: unknown
+  - path: vignette.md
+    origin_url: https://bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html
+    origin_type: curated_document
+    package_version: unknown
+    bioc_release: unknown
+  - path: workflow.md
+    origin_url: unknown
+    origin_type: curated_document
+    package_version: unknown
+    bioc_release: unknown

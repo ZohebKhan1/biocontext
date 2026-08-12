@@ -1,0 +1,33 @@
+---
+package: edgeR
+version: ""
+bioc_release: ""
+date_converted: 2026-03-22
+source_urls:
+  bioconductor_page: https://bioconductor.org/packages/release/bioc/html/edgeR.html
+  vignette: https://bioconductor.org/packages/release/bioc/vignettes/edgeR/inst/doc/edgeRUsersGuide.pdf
+  paper_doi: https://doi.org/10.1093/bioinformatics/btp616
+  github: ""
+  online_book: ""
+notes: "Vignette (user guide) converted from PDF via Docling. tutorial.md is brief intro. Paper PDF from PMC2796818. Also cite quasi-likelihood paper: https://doi.org/10.12688/f1000research.8987.2"
+documents:
+  - path: paper.md
+    origin_url: https://doi.org/10.1093/bioinformatics/btp616
+    origin_type: curated_document
+    package_version: unknown
+    bioc_release: unknown
+  - path: reference.md
+    origin_url: https://bioconductor.org/packages/release/bioc/html/edgeR.html
+    origin_type: curated_document
+    package_version: unknown
+    bioc_release: unknown
+  - path: tutorial.md
+    origin_url: unknown
+    origin_type: curated_document
+    package_version: unknown
+    bioc_release: unknown
+  - path: vignette.md
+    origin_url: https://bioconductor.org/packages/release/bioc/vignettes/edgeR/inst/doc/edgeRUsersGuide.pdf
+    origin_type: curated_document
+    package_version: unknown
+    bioc_release: unknown

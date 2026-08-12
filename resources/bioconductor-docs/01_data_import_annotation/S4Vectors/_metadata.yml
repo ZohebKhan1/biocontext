@@ -1,0 +1,27 @@
+---
+package: S4Vectors
+version: 0.51.5
+bioc_release: devel
+source_commit: 721733a45800
+date_converted: 2026-07-19
+source_urls:
+  bioconductor_page: https://bioconductor.org/packages/devel/bioc/html/S4Vectors.html
+  vignette: https://bioconductor.org/packages/devel/bioc/vignettes/S4Vectors/inst/doc/S4VectorsOverview.html
+  git: https://git.bioconductor.org/packages/S4Vectors
+notes: vignette.md is the official overview, tutorial.md combines the official quick-overview and Rle tips articles, and reference.md was rendered from the canonical man/*.Rd files at the recorded commit.
+documents:
+  - path: reference.md
+    origin_url: https://git.bioconductor.org/packages/S4Vectors
+    origin_type: curated_document
+    package_version: 0.51.5
+    bioc_release: unknown
+  - path: tutorial.md
+    origin_url: unknown
+    origin_type: curated_document
+    package_version: 0.51.5
+    bioc_release: unknown
+  - path: vignette.md
+    origin_url: https://bioconductor.org/packages/devel/bioc/vignettes/S4Vectors/inst/doc/S4VectorsOverview.html
+    origin_type: curated_document
+    package_version: 0.51.5
+    bioc_release: unknown

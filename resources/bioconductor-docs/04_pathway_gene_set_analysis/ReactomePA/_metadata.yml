@@ -1,0 +1,28 @@
+---
+package: ReactomePA
+version: 1.57.0
+bioc_release: devel
+date_converted: 2026-07-19
+source_urls:
+  bioconductor_page: https://bioconductor.org/packages/release/bioc/html/ReactomePA.html
+  vignette: https://bioconductor.org/packages/release/bioc/vignettes/ReactomePA/inst/doc/ReactomePA.html
+  paper_doi: https://doi.org/10.1039/C5MB00663E
+  github: https://github.com/YuLab-SMU/ReactomePA
+  online_book: ""
+notes: The brief vignette is the canonical upstream redirect to the maintained clusterProfiler book, not a failed extraction. paper.md is a source-limited summary of the indexed abstract because open full text is unavailable. reference.md was rendered from the canonical man/*.Rd files at the recorded source version.
+documents:
+  - path: paper.md
+    origin_url: https://doi.org/10.1039/C5MB00663E
+    origin_type: curated_document
+    package_version: unknown
+    bioc_release: unknown
+  - path: reference.md
+    origin_url: https://github.com/YuLab-SMU/ReactomePA
+    origin_type: curated_document
+    package_version: 1.57.0
+    bioc_release: unknown
+  - path: vignette.md
+    origin_url: https://bioconductor.org/packages/release/bioc/vignettes/ReactomePA/inst/doc/ReactomePA.html
+    origin_type: curated_document
+    package_version: 1.57.0
+    bioc_release: unknown

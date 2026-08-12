@@ -1,0 +1,28 @@
+---
+package: SummarizedExperiment
+version: 1.43.0
+bioc_release: devel
+source_commit: ffe9db3f6666
+date_converted: 2026-07-19
+source_urls:
+  bioconductor_page: https://bioconductor.org/packages/devel/bioc/html/SummarizedExperiment.html
+  vignette: https://bioconductor.org/packages/devel/bioc/vignettes/SummarizedExperiment/inst/doc/SummarizedExperiment.html
+  extensions: https://bioconductor.org/packages/devel/bioc/vignettes/SummarizedExperiment/inst/doc/Extensions.html
+  git: https://git.bioconductor.org/packages/SummarizedExperiment
+notes: vignette.md is the primary container guide, tutorial.md covers extensions, and reference.md was rendered from the canonical man/*.Rd files at the recorded commit.
+documents:
+  - path: reference.md
+    origin_url: https://git.bioconductor.org/packages/SummarizedExperiment
+    origin_type: curated_document
+    package_version: 1.43.0
+    bioc_release: unknown
+  - path: tutorial.md
+    origin_url: https://bioconductor.org/packages/devel/bioc/vignettes/SummarizedExperiment/inst/doc/Extensions.html
+    origin_type: curated_document
+    package_version: 1.43.0
+    bioc_release: unknown
+  - path: vignette.md
+    origin_url: https://bioconductor.org/packages/devel/bioc/vignettes/SummarizedExperiment/inst/doc/SummarizedExperiment.html
+    origin_type: curated_document
+    package_version: 1.43.0
+    bioc_release: unknown

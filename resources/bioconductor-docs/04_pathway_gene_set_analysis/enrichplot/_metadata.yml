@@ -1,0 +1,23 @@
+---
+package: enrichplot
+version: ""
+bioc_release: ""
+date_converted: 2026-03-22
+source_urls:
+  bioconductor_page: https://bioconductor.org/packages/release/bioc/html/enrichplot.html
+  vignette: https://bioconductor.org/packages/release/bioc/vignettes/enrichplot/inst/doc/enrichplot.html
+  paper_doi: ""
+  github: https://github.com/YuLab-SMU/enrichplot
+  online_book: ""
+notes: Bioc vignette is a stub pointing to clusterProfiler book.
+documents:
+  - path: reference.md
+    origin_url: https://github.com/YuLab-SMU/enrichplot
+    origin_type: curated_document
+    package_version: unknown
+    bioc_release: unknown
+  - path: vignette.md
+    origin_url: https://bioconductor.org/packages/release/bioc/vignettes/enrichplot/inst/doc/enrichplot.html
+    origin_type: curated_document
+    package_version: unknown
+    bioc_release: unknown

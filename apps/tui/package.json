@@ -1,0 +1,73 @@
+{
+	"name": "biocontext",
+	"author": "Zoheb Khan",
+	"version": "0.1.0",
+	"homepage": "https://github.com/ZohebKhan1/biocontext",
+	"description": "macOS terminal UI that answers Bioconductor package questions from local documentation and exact source, with file, line-range, and package-version citations",
+	"type": "module",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/ZohebKhan1/biocontext.git",
+		"directory": "apps/tui"
+	},
+	"keywords": [
+		"cli",
+		"ai",
+		"bioconductor",
+		"bioinformatics",
+		"r",
+		"tui",
+		"macos"
+	],
+	"engines": {
+		"bun": ">=1.1.0"
+	},
+	"os": [
+		"darwin"
+	],
+	"cpu": [
+		"arm64",
+		"x64"
+	],
+	"bin": {
+		"biocontext": "bin.js"
+	},
+	"files": [
+		"bin.js",
+		"dist/biocontext-darwin-arm64",
+		"dist/biocontext-darwin-x64",
+		"dist/tree-sitter-worker.js",
+		"dist/tree-sitter.js",
+		"dist/tree-sitter.wasm"
+	],
+	"publishConfig": {
+		"access": "public"
+	},
+	"scripts": {
+		"check": "tsgo --noEmit",
+		"format": "prettier --write .",
+		"test": "bun test",
+		"dev": "bun run src/index.ts",
+		"build": "bun run scripts/build-binaries.ts",
+		"prepublishOnly": "bun run scripts/verify-dist.ts"
+	},
+	"devDependencies": {
+		"@babel/core": "^7.29.0",
+		"@babel/preset-react": "^7.28.5",
+		"@babel/preset-typescript": "^7.28.5",
+		"@biocontext/engine": "workspace:*",
+		"@biocontext/shared": "workspace:*",
+		"@opentui/core": "0.1.77",
+		"@opentui/react": "0.1.77",
+		"@types/babel__core": "^7.20.5",
+		"@types/bun": "latest",
+		"@types/node": "22",
+		"@types/react": "^19.2.13",
+		"@typescript/native-preview": "^7.0.0-dev.20260109.1",
+		"babel-plugin-react-compiler": "^1.0.0",
+		"effect": "4.0.0-beta.20",
+		"prettier": "^3.7.4",
+		"react": "^19.2.4",
+		"web-tree-sitter": "0.25.10"
+	}
+}
